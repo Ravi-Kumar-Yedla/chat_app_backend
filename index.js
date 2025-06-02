@@ -6,26 +6,29 @@ import userRoutes from './routes/user.routes.js'
 import { connectDB } from './lib/db.js'
 import cookieParser from 'cookie-parser'
 import { app, server } from './socket/socket.js'
-// import path from 'path'
+import cors from 'cors'
+
 dotenv.config()
 
-const PORT = process.env.PORT ||5000;
+const PORT = process.env.PORT || 5000
 
-// const _dirname = path.resolve()
+// ✅ Apply CORS early
+app.use(cors({
+  origin: 'https://chat-app-frontend-pafi.vercel.app',
+  credentials: true
+}))
 
+// ✅ Core Middlewares
 app.use(express.json())
 app.use(cookieParser())
 
+// ✅ Routes
 app.use('/api/auth', authRoutes)
 app.use('/api/message', messageRoutes)
-app.use('/api/users' ,userRoutes)
+app.use('/api/users', userRoutes)
 
-// app.use(express.static(path.join(_dirname, "/Frontend/dist")));
-// app.get('*',(_,res)=>{
-//     res.sendFile(path.resolve(_dirname,"Frontend","dist","index.html"))
-// })
-
+// ✅ Start Server
 server.listen(PORT, () => {
-    console.log(`server listeneing on ${PORT}`)
-    connectDB();
+  console.log(`Server listening on port ${PORT}`)
+  connectDB()
 })
